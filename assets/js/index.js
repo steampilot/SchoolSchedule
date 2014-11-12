@@ -2,9 +2,12 @@
  * Created by Jerome Roethlisberger on 07.11.14.
  */
 /**
+ * Hides all the elements that are not yet available
  * Initialize all event listeners
  */
 $(function () {
+	$('#profession').hide();
+	$('#school_class').hide();
 	// when the page has finished loading
 	getProfession();
 
@@ -12,8 +15,11 @@ $(function () {
 	$('#profession').on('change', function(){
 		var professionId;
 		professionId = $('#profession option:selected').val();
-
-		getSchoolClassByProfessionId(professionId);
+		if(professionId == 0) {
+			$('#school_class').hide('slow');
+		} else {
+			getSchoolClassByProfessionId(professionId);
+		}
 	});
 
 	// when something has been clicked
@@ -30,8 +36,8 @@ function getProfession() {
 		type: "POST",
 		url: "http://home.gibm.ch/interfaces/133/berufe.php"
 	}).done(function (response) {
-
 		displayProfession(response);
+		$('#profession').show('slow');
 	});
 }
 function getAllSchoolClasses() {
@@ -39,7 +45,6 @@ function getAllSchoolClasses() {
 		type: "POST",
 		url: "http://home.gibm.ch/interfaces/133/klassen.php"
 	}).done(function (response) {
-
 		displaySchoolClass(response);
 	});
 }
@@ -49,6 +54,7 @@ function getSchoolClassByProfessionId(professionId) {
 		url: 'http://home.gibm.ch/interfaces/133/klassen.php?beruf_id=' + professionId
 	}).done(function (response){
 		displaySchoolClass(response);
+		$('#school_class').show('slow');
 	});
 }
 /**
@@ -56,7 +62,7 @@ function getSchoolClassByProfessionId(professionId) {
  * @param profession
  */
 function displayProfession(profession) {
-	var options = '';
+	var options = '<option value="0">** Bitte wählen Sie einen Beruf aus</option>';
 	for (var i in profession) {
 		console.log(profession[i]);
 		var row = profession[i];
@@ -69,7 +75,7 @@ function displayProfession(profession) {
 	$('#profession').html(options);
 }
 function displaySchoolClass(schoolClass){
-	var options = '';
+	var options = '<option value="0">** Bitte wählen Sie eine Klasse aus</option>';
 	for (var i in schoolClass) {
 		console.log(schoolClass[i]);
 		var row = schoolClass[i];
