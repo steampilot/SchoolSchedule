@@ -8,6 +8,14 @@ $(function () {
 	// when the page has finished loading
 	getProfession();
 
+	// when something has changed
+	$('#profession').on('change', function(){
+		var professionId;
+		professionId = $('#profession option:selected').val();
+
+		getSchoolClassByProfessionId(professionId);
+	});
+
 	// when something has been clicked
 	$('#submit').on('click', function () {
 		alert('submit');
@@ -26,7 +34,23 @@ function getProfession() {
 		displayProfession(response);
 	});
 }
+function getAllSchoolClasses() {
+	$.ajax({
+		type: "POST",
+		url: "http://home.gibm.ch/interfaces/133/klassen.php"
+	}).done(function (response) {
 
+		displaySchoolClass(response);
+	});
+}
+function getSchoolClassByProfessionId(professionId) {
+	$.ajax({
+		type: 'POST',
+		url: 'http://home.gibm.ch/interfaces/133/klassen.php?beruf_id=' + professionId
+	}).done(function (response){
+		displaySchoolClass(response);
+	});
+}
 /**
  * Builds the drop down options for selecting a profession
  * @param profession
@@ -36,9 +60,27 @@ function displayProfession(profession) {
 	for (var i in profession) {
 		console.log(profession[i]);
 		var row = profession[i];
-		options += '<option value="' + gh(row.beruf_id) + '">' + gh(row.beruf_name) + '</option>';
+		options +=
+			'<option value="' +
+			gh(row.beruf_id) + '">' +
+			gh(row.beruf_name) +
+			'</option>';
 	}
 	$('#profession').html(options);
+}
+function displaySchoolClass(schoolClass){
+	var options = '';
+	for (var i in schoolClass) {
+		console.log(schoolClass[i]);
+		var row = schoolClass[i];
+		options +=
+			'<option value="' +
+				gh(row.klasse_id) + '">' +
+				gh(row.klasse_name) + ' - ' +
+				gh(row.klasse_longname) +
+			'</option>';
+	}
+	$('#school_class').html(options);
 }
 
 /**encodes html conform string
