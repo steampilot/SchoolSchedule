@@ -45,22 +45,45 @@
 			</select>
 		</div>
 	</form>
-	<div class="panel">
-		<div class="panel-heading">
-			<h1>School Board</h1>
-		</div>
-		<div class="panel-body">
-			<table class="table">
-				<tr>
-					<td>TEST</td>
-				</tr>
-			</table>
-		</div>
-	</div>
+	<div id="lecture_table"></div>
+
+
 </div>
 <!-- /container -->
 
+<script type="text/html" id="weekday_table">
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<h1 data-name="week_number_title"></h1>
+		</div>
+		<div class="panel-body">
+			<div class="panel">
+				<div class="panel-heading">
+					<h3 data-name="weekday"></h3>
+					<small data-name="date">Datum</small>
+				</div>
+				<div>
+					<table class="table">
+						<thead>
+						<tr>
+							<th>Von</th>
+							<th>Bis</th>
+							<th>Fach</th>
+							<th>Longfach</th>
+							<th>Raum</th>
+							<th>Lehrer</th>
+							<th>Kommentar</th>
+						</tr>
+						</thead>
+						<tbody>
 
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
 
 </body>
 </html>
