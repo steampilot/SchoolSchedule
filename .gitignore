@@ -8,3 +8,4 @@ app/[Cc]onfig/database.php
 
 atlassian-ide-plugin.xml
 .idea
+/atlassian-ide-plugin.xml
