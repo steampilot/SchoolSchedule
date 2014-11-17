@@ -5,39 +5,58 @@
  * Hides all the elements that are not yet available
  * Initialize all event listeners
  */
+paginate = true;
 $(function () {
+	var d = new Date();
+	var year = d.getFullYear();
+	var week = getWeekNumber(d);
+	var classId = null;
+
 	$('#profession').hide();
 	$('#school_class').hide();
+	$('#not_found').hide();
+	$('#board').hide();
 	// when the page has finished loading
 	getProfession();
-
 	// when something has changed
 	$('#profession').on('change', function(){
 		var professionId;
 		professionId = $('#profession').val();
 		if(professionId == 0) {
 			$('#school_class').hide('slow');
+			$('#board').hide('slow');
 		} else {
+			$('#board').hide('slow');
+			$('#not_found').hide('slow');
 			getSchoolClassByProfessionId(professionId);
 		}
 	});
 	$('#school_class').on('change', function(){
-		var week = 12;
-		var year = 2013;
-		var classId = $('#school_class').val();
+		classId = $('#school_class').val();
 		console.log(classId);
 		//classId = 1481221;
+		if(classId == 0) {
+			$('#board').hide('slow');
+			$('#not_found').hide('slow');
+		} else {
+			getBoard(classId,week,year);
+		}
+	});
+	$('.select_week_btn').on('click', function () {
+		week = $('#select_week').val();
+		year = $('#select_year').val();
 		getBoard(classId,week,year);
 	});
-
-	// when something has been clicked
-	$('#submit').on('click', function () {
-		alert('submit');
-	});
-
-
 });
 
+function getWeekNumber(d){
+	d = new Date(+d);
+	d.setHours(0,0,0,0);
+	d.setDate(d.getDate()+4 - (d.getDay() || 7));
+	var yearStart = new Date(d.getFullYear(),0,1);
+	var weekNr = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7)
+	return [weekNr];
+}
 /**
  * gets the name and the id of a profession via JSON response
  */
@@ -68,12 +87,21 @@ function getSchoolClassByProfessionId(professionId) {
 	});
 }
 function getBoard(classId,week,year){
-	var url = 'http://home.gibm.ch/interfaces/133/tafel.php' + '?klasse_id=' + classId + '&woche='+week+'-'+year;
+	console.log('week: '+ week);
+	console.log('year: '+ year);
+	var week_year = 'Aktuel'
+	var url = 'http://home.gibm.ch/interfaces/133/tafel.php?klasse_id=' +classId;
+	if (week != null && year != null) {
+		url += '&woche='+week+'-'+year;
+		week_year = week +'-'+ year;
+	}
 		$.ajax({
 		type: 'POST',
 		url: url
 	}).done(function (response){
-		displayBoard(response);
+			response
+
+		displayBoard(response, week_year);
 	});
 }
 /**
@@ -112,6 +140,7 @@ function prepareBoard(rows) {
 	for (var i in rows) {
 		var row = rows[i];
 		var weekday = row.tafel_wochentag;
+		var date = row.tafel_datum;
 		if (!(weekday in result)) {
 			result[weekday] = [];
 		}
@@ -121,26 +150,32 @@ function prepareBoard(rows) {
 	return result;
 
 }
-function displayBoard(board) {
-	$('#lecture_table').html('');
-	console.log(board);
+function displayBoard(board, week_year) {
+	console.log(week_year);
+	$('#week_year').html( 'Woche: ' + gh(week_year));
+
+	$('#lecture_board').html('');
+	var date = null;
+
 	var result = prepareBoard(board);
-	console.log(result);
 	for (var weekday in result) {
 		var lecture = result[weekday];
-
 		// creating jquery dom object of the cloned html template
-		var tpl = $($('#weekday_table').html());
+		var tpl = $($('#board_content').html());
+
 		var tbody = tpl.find('tbody');
-		tpl.find('[data-name=week_number_title]').html('Woche ')
-		tpl.find('[data-name=weekday]').html(gh(getWeekDayName(weekday)));
-
+		var select = $($('#select_date_content').html());
+		tpl.find('#week_day').html(gh(getWeekDayName(weekday)));
+		tpl.find('#select_date').append(select);
 		console.log(tbody);
-
-		var rows = '';
+		var rows = 'Lectures: ';
+		console.log('lecture[0] ');
 		for (var i in lecture) {
 			rows += '<tr>';
 			var row = lecture[i];
+
+			tpl.find('#date').html(gh(row.tafel_datum));
+			date = row.tafel_datum;
 			rows += '<td>' + gh(row.tafel_von) + '</td>';
 			rows += '<td>' + gh(row.tafel_bis) + '</td>';
 			rows += '<td>' + gh(row.tafel_raum) + '</td>';
@@ -151,8 +186,17 @@ function displayBoard(board) {
 			rows += '</tr>';
 		}
 		tbody.html(rows);
+		$('#lecture_board').append(tpl);
+	}
 
-		$('#lecture_table').append(tpl);
+	console.log('board: ' + board);
+	if (date != null) {
+		$('#board').show('slow');
+		$('#not_found').hide('slow');
+		date = null;
+	} else {
+		$('#board').hide('slow');
+		$('#not_found').show('slow');
 	}
 }
 
@@ -180,4 +224,9 @@ function getWeekDayName(id) {
 		'Samstag'
 	];
 	return weekdayName[id];
+}
+function showSelectWeek(){
+}
+function showPaginateWeek(){
+
 }

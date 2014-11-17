@@ -38,6 +38,7 @@
 			</select>
 		</div>
 	</form>
+
 	<form role="form" name="school_class">
 		<div class="form-group">
 			<label for="school_class" class="label school_class">School Class</label>
@@ -45,22 +46,78 @@
 			</select>
 		</div>
 	</form>
-	<div id="lecture_table"></div>
-
-
-</div>
-<!-- /container -->
-
-<script type="text/html" id="weekday_table">
-	<div class="panel panel-info">
+	<div id="not_found" class="panel panel-danger">
 		<div class="panel-heading">
-			<h1 data-name="week_number_title"></h1>
+			<div class="row">
+				<div class="col-sm-6">
+					<h1>No Data Found</h1>
+				</div>
+				<div class="week_controllers col-sm-6">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="board" class="panel panel-info">
+		<div class="panel-heading">
+			<div class="row">
+				<div class="col-sm-6">
+					<h1 id="week_year"></h1>
+				</div>
+				<div class="week_controllers col-sm-6">
+				</div>
+			</div>
 		</div>
 		<div class="panel-body">
+			<div id="lecture_board">This is where the content comes in</div>
+		</div>
+		<div class="panel-footer"></div>
+	</div>
+</div>
+<!-- /container -->
+<script type="text/html" id="select_week_content">
+	<form class="form">
+		<button type="button" class="show_select_week btn btn-default">
+			<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+		</button>
+		<div class="col-xs-5">
+
+			<select id="select_week" class="form-control input-lg">
+			</select>
+		</div>
+		<div class="col-xs-5 ">
+			<select id="select_year" class="form-control input-lg">
+				<option>2017</option>
+				<option>2016</option>
+				<option>2015</option>
+				<option>2014</option>
+				<option>2013</option>
+				<option>2012</option>
+				<option>2011</option>
+			</select>
+		</div>
+		<button type="button" class="select_date_btn btn btn-default">
+			<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+		</button>
+	</form>
+</script>
+<script type="text/html" id="paginate_weew_content">
+	<div class="col-xs-5 form-group-lg form-horizontal">
+		<button type="button" id="decrease_week" class="select_date_btn btn btn-default">
+			<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+		</button>
+		<button type="button" id="show_select_control" class="select_date_btn btn btn-default">
+			<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+		</button>
+		<button type="button" id="increase_week" class="select_date_btn btn btn-default">
+			<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+		</button>
+	</div>
+</script>
+<script type="text/html" id="board_content">
 			<div class="panel">
 				<div class="panel-heading">
-					<h3 data-name="weekday"></h3>
-					<small data-name="date">Datum</small>
+					<h3 id="week_day"></h3>
+					<small id="date">Datum</small>
 				</div>
 				<div>
 					<table class="table">
@@ -68,9 +125,9 @@
 						<tr>
 							<th>Von</th>
 							<th>Bis</th>
+							<th>Raum</th>
 							<th>Fach</th>
 							<th>Longfach</th>
-							<th>Raum</th>
 							<th>Lehrer</th>
 							<th>Kommentar</th>
 						</tr>
