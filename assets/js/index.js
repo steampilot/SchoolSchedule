@@ -47,6 +47,14 @@ $(function () {
 		year = $('#select_year').val();
 		getBoard(classId,week,year);
 	});
+	$('#datepicker').datepicker({
+		autoclose: true,
+		calendarWeeks: true
+
+	});
+	$('.datepicker').datepicker()
+
+		});
 });
 
 function getWeekNumber(d){
