@@ -11,7 +11,10 @@ $(function () {
 	var year = d.getFullYear();
 	var week = getWeekNumber(d);
 	var classId = null;
-
+	var selectedWeek = 0;
+	var selectedYear = 0;
+	$('#datepicker').attr('placeholder',week+'-'+year);
+	$('#page_control').hide();
 	$('#profession').hide();
 	$('#school_class').hide();
 	$('#not_found').hide();
@@ -42,19 +45,43 @@ $(function () {
 			getBoard(classId,week,year);
 		}
 	});
-	$('.select_week_btn').on('click', function () {
-		week = $('#select_week').val();
-		year = $('#select_year').val();
-		getBoard(classId,week,year);
-	});
 	$('#datepicker').datepicker({
 		autoclose: true,
-		calendarWeeks: true
+		weekStart: 1,
+		todayBtn: 'linked',
+		calendarWeeks: true,
+		selectWeek: true,
+		todayHighLight: true,
+		format: 'yyyy-mm-dd'
+	});
+	$('#previous').on('click', function(){
+		week = week - 1;
+		$('#datepicker').val(week+'-'+year);
+		if ( classId != null && week != 0 && year != 0) {
+
+			getBoard(classId, week, year);
+		}
+	});
+	$('#next').on('click', function(){
+		week = week + 1;
+		$('#datepicker').val(week+'-'+year);
+		if ( classId != null && week != 0 && year != 0) {
+
+			getBoard(classId, week, year);
+		}
+	});
+	$('#datepicker').datepicker()
+		.on('hide', function(){
+			var d =  new Date($('#datepicker').val());
+			week = getWeekNumber(d);
+			year = d.getFullYear();
+		$('#datepicker').val(week+'-'+year);
+			if ( classId != null && week != 0 && year != 0) {
+
+				getBoard(classId, week, year);
+			}
 
 	});
-	$('.datepicker').datepicker()
-
-		});
 });
 
 function getWeekNumber(d){
@@ -63,8 +90,9 @@ function getWeekNumber(d){
 	d.setDate(d.getDate()+4 - (d.getDay() || 7));
 	var yearStart = new Date(d.getFullYear(),0,1);
 	var weekNr = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7)
-	return [weekNr];
+	return weekNr;
 }
+
 /**
  * gets the name and the id of a profession via JSON response
  */
@@ -95,6 +123,9 @@ function getSchoolClassByProfessionId(professionId) {
 	});
 }
 function getBoard(classId,week,year){
+	$('#page_control').fadeIn('slow');
+	$('#board').hide('slow');
+	$('#not_found').hide('slow');
 	console.log('week: '+ week);
 	console.log('year: '+ year);
 	var week_year = 'Aktuel'
@@ -232,9 +263,4 @@ function getWeekDayName(id) {
 		'Samstag'
 	];
 	return weekdayName[id];
-}
-function showSelectWeek(){
-}
-function showPaginateWeek(){
-
 }

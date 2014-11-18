@@ -64,7 +64,7 @@
 				this.push.apply(this, new_array);
 			},
 			clear: function(){
-				this.splice(0);
+				this.length = 0;
 			},
 			copy: function(){
 				var a = new DateArray();
@@ -115,6 +115,7 @@
 		}
 
 		this.viewMode = this.o.startView;
+		this.selectWeek = this.o.selectWeek;
 
 		if (this.o.calendarWeeks)
 			this.picker.find('tfoot th.today')
@@ -767,7 +768,11 @@
 			var clsName;
 			while (prevMonth.valueOf() < nextMonth){
 				if (prevMonth.getUTCDay() === this.o.weekStart){
-					html.push('<tr>');
+					if (this.selectWeek) {
+						html.push('<tr class="week">');
+					} else {
+						html.push('<tr>');
+					}
 					if (this.o.calendarWeeks){
 						// ISO 8601: First week contains first thursday.
 						// ISO also states week starts on Monday, but we can be more abstract here.
@@ -811,6 +816,9 @@
 				prevMonth.setUTCDate(prevMonth.getUTCDate()+1);
 			}
 			this.picker.find('.datepicker-days tbody').empty().append(html.join(''));
+			this.picker.find('.day.active').parent().addClass('active');
+			if(this.selectWeek)
+				this.picker.find('.day.active').parent().find(".day").addClass("active");
 
 			var months = this.picker.find('.datepicker-months')
 						.find('th:eq(1)')
@@ -1409,7 +1417,8 @@
 		startView: 0,
 		todayBtn: false,
 		todayHighlight: false,
-		weekStart: 0
+		weekStart: 0,
+		selectWeek: true
 	};
 	var locale_opts = $.fn.datepicker.locale_opts = [
 		'format',
