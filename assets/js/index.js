@@ -70,7 +70,14 @@ $(function () {
 			getBoard(classId, week, year);
 		}
 	});
-	$('#datepicker').datepicker()
+
+    $('#datepicker').keydown(function(e) {
+        e.preventDefault();
+        return false;
+    });
+
+
+    $('#datepicker').datepicker()
 		.on('hide', function(){
 			var d =  new Date($('#datepicker').val());
 			week = getWeekNumber(d);
