@@ -7,22 +7,46 @@
  */
 paginate = true;
 $(function () {
+    /**
+     * The date object to work with, initialized as now
+     * @type {Date}
+     */
 	var d = new Date();
+
+    /**
+     * The year of a date
+     * @type {number}
+     */
 	var year = d.getFullYear();
+
+    /**
+     * The number of a week in a year
+     * @type {number}
+     */
 	var week = getWeekNumber(d);
+
+    /**
+     * The ID of a school class provided by GIBM
+     * @type {null} | {number}
+     */
 	var classId = null;
-	var selectedWeek = 0;
-	var selectedYear = 0;
-	$('#datepicker').attr('placeholder',week+'-'+year);
+    /**
+     * Init the date input field with a placeholder
+     * @function $('#datepicker') The date input field
+     */
+    $('#datepicker').attr('placeholder',week+'-'+year);
 	$('#page_control').hide();
 	$('#profession').hide();
 	$('#school_class').hide();
 	$('#not_found').hide();
 	$('#board').hide();
+
 	// when the page has finished loading
 	getProfession();
+
 	// when something has changed
-	$('#profession').on('change', function(){
+
+    $('#profession').on('change', function(){
 		var professionId;
 		professionId = $('#profession').val();
 		if(professionId == 0) {
@@ -70,13 +94,17 @@ $(function () {
 			getBoard(classId, week, year);
 		}
 	});
-
+    /**
+     * Prevents typing into the date input field for the common way is to pick the week number by using the datepicker
+     */
     $('#datepicker').keydown(function(e) {
         e.preventDefault();
         return false;
     });
 
-
+    /**
+     * Calls the datepicker plugin when clicking in the input field
+     */
     $('#datepicker').datepicker()
 		.on('hide', function(){
 			var d =  new Date($('#datepicker').val());
@@ -90,7 +118,11 @@ $(function () {
 
 	});
 });
-
+/**
+ * Gets the week numbre by a given date object
+ * @param d {Date}
+ * @returns {number}
+ */
 function getWeekNumber(d){
 	d = new Date(+d);
 	d.setHours(0,0,0,0);
