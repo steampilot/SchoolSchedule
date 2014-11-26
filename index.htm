@@ -14,8 +14,8 @@
 	<link type="text/css" media="screen" href="assets/css/bootstrap.min.css" rel="stylesheet">
 	<link href="assets/css/datepicker3.css" rel="stylesheet">
 	<!-- Custom styles for this template -->
-	<link rel="stylesheet" type="text/css" 
-	 media="screen" href="assets/css/jumbotron-narrow.css">
+	<link rel="stylesheet" type="text/css"
+	      media="screen" href="assets/css/jumbotron-narrow.css">
 	<link media="print" type="text/css" href="assets/css/print.css" rel="stylesheet">
 
 	<script src="assets/js/jquery-2.1.1.min.js"></script>
@@ -61,7 +61,8 @@
 					</li>
 					<li class="form-inline">
 						<div class="input-group">
-							<input type="text" id="datepicker" min="1" max="52" class="form-control datepicker col-xs-3 disabled text-center">
+							<input readonly="readonly" id="datepicker" min="1" max="52"
+							       class="form-control datepicker col-xs-3 text-center">
 						</div>
 					</li>
 					<li class="next">
@@ -100,75 +101,45 @@
 		<div class="panel-footer"></div>
 	</div>
 </div>
-<!-- /container -->
-<script type="text/html" id="select_week_content">
-	<form class="form">
-		<button type="button" class="show_select_week btn btn-default">
-			<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-		</button>
-		<div class="col-xs-5">
 
-			<select id="select_week" class="form-control input-lg">
-			</select>
-		</div>
-		<div class="col-xs-5 ">
-			<select id="select_year" class="form-control input-lg">
-				<option>2017</option>
-				<option>2016</option>
-				<option>2015</option>
-				<option>2014</option>
-				<option>2013</option>
-				<option>2012</option>
-				<option>2011</option>
-			</select>
-		</div>
-		<button type="button" class="select_date_btn btn btn-default">
-			<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-		</button>
-	</form>
-</script>
-<script type="text/html" id="paginate_weew_content">
-	<div class="col-xs-5 form-group-lg form-horizontal">
-		<button type="button" id="decrease_week" class="select_date_btn btn btn-default">
-			<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-		</button>
-		<button type="button" id="show_select_control" class="select_date_btn btn btn-default">
-			<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-		</button>
-		<button type="button" id="increase_week" class="select_date_btn btn btn-default">
-			<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-		</button>
-	</div>
-</script>
 <script type="text/html" id="board_content">
-			<div class="panel">
-				<div class="panel-heading">
-					<h3 id="week_day">
-					</h3>
-					<small id="date">Datum</small>
-				</div>
-				<div>
-					<table class="table">
-						<thead>
-						<tr>
-							<th>Von</th>
-							<th>Bis</th>
-							<th>Raum</th>
-							<th>Fach</th>
-							<th>Longfach</th>
-							<th>Lehrer</th>
-							<th>Kommentar</th>
-						</tr>
-						</thead>
-						<tbody>
+	<div class="panel">
+		<div class="panel-heading">
+			<h3 id="week_day">
+			</h3>
+			<small id="date">Datum</small>
+		</div>
+		<div>
+			<table class="table">
+				<thead>
+				<tr>
+					<th>Von</th>
+					<th>Bis</th>
+					<th>Raum</th>
+					<th>Fach</th>
+					<th>Longfach</th>
+					<th>Lehrer</th>
+					<th>Kommentar</th>
+				</tr>
+				</thead>
+				<tbody>
 
-						</tbody>
-					</table>
-				</div>
-			</div>
+				</tbody>
+			</table>
 		</div>
 	</div>
 </script>
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons Lizenzvertrag" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">SteamPilot School Schedule</span> von <a xmlns:cc="http://creativecommons.org/ns#" href="www.steampilot.ch/demo/spss" property="cc:attributionName" rel="cc:attributionURL">Jérôme Röthlisberger</a> ist lizenziert unter einer <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Namensnennung - Nicht-kommerziell - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>.<br />Über diese Lizenz hinausgehende Erlaubnisse können Sie unter <a xmlns:cc="http://creativecommons.org/ns#" href="www.steampilot.ch" rel="cc:morePermissions">www.steampilot.ch</a> erhalten.
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons Lizenzvertrag"
+                                                                               style="border-width:0"
+                                                                               src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"/></a><br/><span
+		xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource"
+		property="dct:title" rel="dct:type">SteamPilot School Schedule</span> von <a
+		xmlns:cc="http://creativecommons.org/ns#" href="www.steampilot.ch/demo/spss" property="cc:attributionName"
+		rel="cc:attributionURL">Jérôme Röthlisberger</a> ist lizenziert unter einer <a rel="license"
+                                                                                       href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative
+	Commons Namensnennung - Nicht-kommerziell - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>.<br/>Über
+diese Lizenz hinausgehende Erlaubnisse können Sie unter <a xmlns:cc="http://creativecommons.org/ns#"
+                                                           href="www.steampilot.ch" rel="cc:morePermissions">www.steampilot.ch</a>
+erhalten.
 </body>
 </html>
