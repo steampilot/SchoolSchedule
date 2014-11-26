@@ -7,6 +7,8 @@
  */
 paginate = true;
 $(function () {
+
+
     /**
      * The date object to work with, initialized as now
      * @type {Date}
@@ -25,11 +27,9 @@ $(function () {
      */
 	var week = getWeekNumber(d);
 
-    /**
-     * The ID of a school class provided by GIBM
-     * @type {null} | {number}
-     */
-	var classId = null;
+
+
+	//var classId = $d.getCookie('classId', null);
     /**
      * Init the date input field with a placeholder
      * @function $('#datepicker') The date input field
@@ -47,9 +47,12 @@ $(function () {
 	// when something has changed
 
     $('#profession').on('change', function(){
-		var professionId;
-		professionId = $('#profession').val();
-		if(professionId == 0) {
+
+		var professionId = $('#profession').val();
+	    $d.setCookie('professionId',professionId);
+	    $d.setCookie('classId',0);
+
+	    if(professionId == 0) {
 			$('#school_class').hide('slow');
 			$('#board').hide('slow');
 		} else {
@@ -59,13 +62,15 @@ $(function () {
 		}
 	});
 	$('#school_class').on('change', function(){
-		classId = $('#school_class').val();
+		var classId = $('#school_class').val();
+		$d.setCookie('classId',classId);
 		console.log(classId);
 		//classId = 1481221;
 		if(classId == 0) {
 			$('#board').hide('slow');
 			$('#not_found').hide('slow');
 		} else {
+			//$d.setCookie('classId', classId);
 			getBoard(classId,week,year);
 		}
 	});
@@ -117,7 +122,23 @@ $(function () {
 			}
 
 	});
+	init();
 });
+
+function init(){
+	var professionId = $d.getCookie("professionId",0);
+	if(professionId > 0) {
+		$('#profession').val(professionId);
+		//$('#profession').trigger('change');
+		var classId = $d.getCookie("classId",0);
+		if(classId > 0) {
+			$('#school_class').val(classId);
+			$('#school_class').trigger('change');
+		}
+	}
+
+}
+
 /**
  * Gets the week numbre by a given date object
  * @param d {Date}
@@ -141,6 +162,7 @@ function getProfession() {
 		url: "http://home.gibm.ch/interfaces/133/berufe.php"
 	}).done(function (response) {
 		displayProfession(response);
+
 		$('#profession').show('slow');
 	});
 }
@@ -158,6 +180,7 @@ function getSchoolClassByProfessionId(professionId) {
 		url: 'http://home.gibm.ch/interfaces/133/klassen.php?beruf_id=' + professionId
 	}).done(function (response){
 		displaySchoolClass(response);
+
 		$('#school_class').show('slow');
 	});
 }
@@ -169,7 +192,7 @@ function getBoard(classId,week,year){
 	console.log('year: '+ year);
 	var week_year = 'Aktuel'
 	var url = 'http://home.gibm.ch/interfaces/133/tafel.php?klasse_id=' +classId;
-	if (week != null && year != null) {
+	if ( typeof week === 'undefined'  &&  typeof year === 'undefined') {
 		url += '&woche='+week+'-'+year;
 		week_year = week +'-'+ year;
 	}
