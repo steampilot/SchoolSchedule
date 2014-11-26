@@ -5,36 +5,93 @@
  * Hides all the elements that are not yet available
  * Initialize all event listeners
  */
+
+
+
+
+app = {};
+
+if (!app.Index) {
+	app.Index = {};
+}
+
+app.Index = function (config) {
+
+	// this object
+	var $this = this;
+
+	// config
+	this.config = config || {};
+
+	/**
+	 * Init page
+	 *
+	 * @returns {undefined}
+	 */
+	this.init = function () {
+		// init events
+		$('#myelement').on('click', this.myelement_onClick);
+
+	};
+
+	this.load = function () {
+		// rpc request
+// load form data
+	};
+
+	/**
+	 * Event handler
+	 *
+	 * @param {object} e
+	 * @returns {undefined}
+	 */
+	this.myelement_onClick = function (e) {
+		$this.getSomething();
+		// $this.config
+	};
+
+
+
+	this.init();
+
+};
+
+
+$(function () {
+	var page = new app.Index();
+	page.load();
+});
+
+
 paginate = true;
 $(function () {
 
 
-    /**
-     * The date object to work with, initialized as now
-     * @type {Date}
-     */
+	/**
+	 * The date object to work with, initialized as now
+	 * @type {Date}
+	 */
 	var d = new Date();
 
-    /**
-     * The year of a date
-     * @type {number}
-     */
+	/**
+	 * The year of a date
+	 * @type {number}
+	 */
 	var year = d.getFullYear();
 
-    /**
-     * The number of a week in a year
-     * @type {number}
-     */
+	/**
+	 * The number of a week in a year
+	 * @type {number}
+	 */
 	var week = getWeekNumber(d);
 
 
-
 	//var classId = $d.getCookie('classId', null);
-    /**
-     * Init the date input field with a placeholder
-     * @function $('#datepicker') The date input field
-     */
-    $('#datepicker').attr('placeholder',week+'-'+year);
+	/**
+	 * Init the date input field with a placeholder
+	 * @function $('#datepicker') The date input field
+	 */
+	$('#datepicker').attr('placeholder', week + '-' + year);
 	$('#page_control').hide();
 	$('#profession').hide();
 	$('#school_class').hide();
@@ -46,13 +103,13 @@ $(function () {
 
 	// when something has changed
 
-    $('#profession').on('change', function(){
+	$('#profession').on('change', function () {
 
 		var professionId = $('#profession').val();
-	    $d.setCookie('professionId',professionId);
-	    $d.setCookie('classId',0);
+		$d.setCookie('professionId', professionId);
+		$d.setCookie('classId', 0);
 
-	    if(professionId == 0) {
+		if (professionId == 0) {
 			$('#school_class').hide('slow');
 			$('#board').hide('slow');
 		} else {
@@ -61,17 +118,17 @@ $(function () {
 			getSchoolClassByProfessionId(professionId);
 		}
 	});
-	$('#school_class').on('change', function(){
+	$('#school_class').on('change', function () {
 		var classId = $('#school_class').val();
-		$d.setCookie('classId',classId);
+		$d.setCookie('classId', classId);
 		console.log(classId);
 		//classId = 1481221;
-		if(classId == 0) {
+		if (classId == 0) {
 			$('#board').hide('slow');
 			$('#not_found').hide('slow');
 		} else {
 			//$d.setCookie('classId', classId);
-			getBoard(classId,week,year);
+			getBoard(classId, week, year);
 		}
 	});
 	$('#datepicker').datepicker({
@@ -83,55 +140,55 @@ $(function () {
 		todayHighLight: true,
 		format: 'yyyy-mm-dd'
 	});
-	$('#previous').on('click', function(){
+	$('#previous').on('click', function () {
 		week = week - 1;
-		$('#datepicker').val(week+'-'+year);
-		if ( classId != null && week != 0 && year != 0) {
+		$('#datepicker').val(week + '-' + year);
+		if (classId != null && week != 0 && year != 0) {
 
 			getBoard(classId, week, year);
 		}
 	});
-	$('#next').on('click', function(){
+	$('#next').on('click', function () {
 		week = week + 1;
-		$('#datepicker').val(week+'-'+year);
-		if ( classId != null && week != 0 && year != 0) {
+		$('#datepicker').val(week + '-' + year);
+		if (classId != null && week != 0 && year != 0) {
 
 			getBoard(classId, week, year);
 		}
 	});
-    /**
-     * Prevents typing into the date input field for the common way is to pick the week number by using the datepicker
-     */
-    $('#datepicker').keydown(function(e) {
-        e.preventDefault();
-        return false;
-    });
+	/**
+	 * Prevents typing into the date input field for the common way is to pick the week number by using the datepicker
+	 */
+	$('#datepicker').keydown(function (e) {
+		e.preventDefault();
+		return false;
+	});
 
-    /**
-     * Calls the datepicker plugin when clicking in the input field
-     */
-    $('#datepicker').datepicker()
-		.on('hide', function(){
-			var d =  new Date($('#datepicker').val());
+	/**
+	 * Calls the datepicker plugin when clicking in the input field
+	 */
+	$('#datepicker').datepicker()
+		.on('hide', function () {
+			var d = new Date($('#datepicker').val());
 			week = getWeekNumber(d);
 			year = d.getFullYear();
-		$('#datepicker').val(week+'-'+year);
-			if ( classId != null && week != 0 && year != 0) {
+			$('#datepicker').val(week + '-' + year);
+			if (classId != null && week != 0 && year != 0) {
 
 				getBoard(classId, week, year);
 			}
 
-	});
+		});
 	init();
 });
 
-function init(){
-	var professionId = $d.getCookie("professionId",0);
-	if(professionId > 0) {
+function init() {
+	var professionId = $d.getCookie("professionId", 0);
+	if (professionId > 0) {
 		$('#profession').val(professionId);
 		//$('#profession').trigger('change');
-		var classId = $d.getCookie("classId",0);
-		if(classId > 0) {
+		var classId = $d.getCookie("classId", 0);
+		if (classId > 0) {
 			$('#school_class').val(classId);
 			$('#school_class').trigger('change');
 		}
@@ -144,12 +201,12 @@ function init(){
  * @param d {Date}
  * @returns {number}
  */
-function getWeekNumber(d){
+function getWeekNumber(d) {
 	d = new Date(+d);
-	d.setHours(0,0,0,0);
-	d.setDate(d.getDate()+4 - (d.getDay() || 7));
-	var yearStart = new Date(d.getFullYear(),0,1);
-	var weekNr = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7)
+	d.setHours(0, 0, 0, 0);
+	d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+	var yearStart = new Date(d.getFullYear(), 0, 1);
+	var weekNr = Math.ceil(( ( (d - yearStart) / 86400000) + 1) / 7)
 	return weekNr;
 }
 
@@ -178,29 +235,29 @@ function getSchoolClassByProfessionId(professionId) {
 	$.ajax({
 		type: 'POST',
 		url: 'http://home.gibm.ch/interfaces/133/klassen.php?beruf_id=' + professionId
-	}).done(function (response){
+	}).done(function (response) {
 		displaySchoolClass(response);
 
 		$('#school_class').show('slow');
 	});
 }
-function getBoard(classId,week,year){
+function getBoard(classId, week, year) {
 	$('#page_control').fadeIn('slow');
 	$('#board').hide('slow');
 	$('#not_found').hide('slow');
-	console.log('week: '+ week);
-	console.log('year: '+ year);
+	console.log('week: ' + week);
+	console.log('year: ' + year);
 	var week_year = 'Aktuel'
-	var url = 'http://home.gibm.ch/interfaces/133/tafel.php?klasse_id=' +classId;
-	if ( typeof week === 'undefined'  &&  typeof year === 'undefined') {
-		url += '&woche='+week+'-'+year;
-		week_year = week +'-'+ year;
+	var url = 'http://home.gibm.ch/interfaces/133/tafel.php?klasse_id=' + classId;
+	if (typeof week === 'undefined' && typeof year === 'undefined') {
+		url += '&woche=' + week + '-' + year;
+		week_year = week + '-' + year;
 	}
-		$.ajax({
+	$.ajax({
 		type: 'POST',
 		url: url
-	}).done(function (response){
-			response
+	}).done(function (response) {
+		response
 
 		displayBoard(response, week_year);
 	});
@@ -221,15 +278,15 @@ function displayProfession(profession) {
 	}
 	$('#profession').html(options);
 }
-function displaySchoolClass(schoolClass){
+function displaySchoolClass(schoolClass) {
 	var options = '<option value="0">** Bitte wählen Sie eine Klasse aus</option>';
 	for (var i in schoolClass) {
 		var row = schoolClass[i];
 		options +=
 			'<option value="' +
-				gh(row.klasse_id) + '">' +
-				gh(row.klasse_name) + ' - ' +
-				gh(row.klasse_longname) +
+			gh(row.klasse_id) + '">' +
+			gh(row.klasse_name) + ' - ' +
+			gh(row.klasse_longname) +
 			'</option>';
 	}
 	$('#school_class').html(options);
@@ -253,7 +310,7 @@ function prepareBoard(rows) {
 }
 function displayBoard(board, week_year) {
 	console.log(week_year);
-	$('#week_year').html( 'Woche: ' + gh(week_year));
+	$('#week_year').html('Woche: ' + gh(week_year));
 
 	$('#lecture_board').html('');
 	var date = null;
@@ -311,11 +368,11 @@ function gh(value) {
 	return $('<div/>').text(value).html();
 }
 function gu(value) {
-	return '<a href="'+value+'">'+value+'</a>';
+	return '<a href="' + value + '">' + value + '</a>';
 }
 
 function getWeekDayName(id) {
-	var weekdayName  = [
+	var weekdayName = [
 		'Sontag',
 		'Montag',
 		'Dienstag',
