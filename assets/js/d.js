@@ -1637,7 +1637,6 @@ $d.loadTable = function(options) {
 			'rows': null
 		},
 		options);
-//debugger;
 	var el = $(options.control);
 	if (!el.length) {
 		return;
@@ -1648,7 +1647,7 @@ $d.loadTable = function(options) {
 		return;
 	}
 	var strTableId = $(el).attr('id');
-//debugger;
+
 	var strNewRow = $d.decodeBase64($("#" + strTableId).attr('data-newrow'));
 //console.log(strNewRow);
 	var numRow = parseInt($(el).find('tr:last').attr('data-row'), 10) + 1;

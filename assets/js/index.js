@@ -92,17 +92,18 @@ app.Index = function (config) {
 	 * @param d {Date}
 	 * @returns {number}
 	 */
-	this.getWeek = function (d) {
-		d = new Date(+d);
+	this.getWeek = function (strDate) {
+		var d = new Date(strDate);
 		d.setHours(0, 0, 0, 0);
 		d.setDate(d.getDate() + 4 - (d.getDay() || 7));
 		var yearStart = new Date(d.getFullYear(), 0, 1);
 		var weekNr = Math.ceil(( ( (d - yearStart) / 86400000) + 1) / 7);
-		var weekYear = weekNr+'-'+yearStart;
+		var numYear = yearStart.getFullYear();
+		var weekYear = weekNr+'-'+numYear;
 		var result = {
-			weekYear: weekNr,
-			weekNr: weekNr,
-			yearStart: yearStart
+			weekYear: weekYear,
+			week: weekNr,
+			year: numYear
 		};
  		return result;
 	};
@@ -134,25 +135,23 @@ app.Index = function (config) {
 
 	this.getBoard = function () {
 		var classId = $('#school_class').val();
-		var selectedDate = $('#datepicker').val();
+		var selectedDate = $this.getSelectedDate();
 
-		console.log(selectedDate);
-		var year = $this.getWeek(selectedDate);
+		var week = $this.getWeek(selectedDate);
 		$('#page_control').fadeIn('slow');
 		$('#board').hide('slow');
 		$('#not_found').hide('slow');
-		var week_year = 'Aktuell';
-		var url = 'http://home.gibm.ch/interfaces/133/tafel.php?klasse_id=' + classId;
-		if (typeof week === 'undefined' && typeof year === 'undefined') {
-			url += '&woche=' + week + '-' + year;
-			week_year = week + '-' + year;
-		};
+		var strParams = $.param({
+			klasse_id: classId,
+			woche: week.weekYear
+		});
+		var url = 'http://home.gibm.ch/interfaces/133/tafel.php?' + strParams;
 
 		$.ajax({
 			type: 'POST',
 			url: url
 		}).done(function (response) {
-			$this.displayBoard(response, week_year);
+			$this.displayBoard(response, week.weekYear);
 		});
 	};
 	/**
@@ -196,19 +195,56 @@ app.Index = function (config) {
 			}
 			result[weekday].push(row);
 		}
-		console.log(result);
 		return result;
 
 	};
+	/**
+	 * Left padding
+	 *
+	 * @param {string} str
+	 * @param {number} nLen
+	 * @param {string} sChar
+	 * @returns {string}
+	 */
+	this.padLeft = function(str, nLen, sChar) {
+		str = String(str);
+		sChar = sChar || ' ';
+		while (str.length < nLen) {
+			str = sChar + str;
+		}
+		return str;
+	};
 
+
+	this.formatDate = function (strIsoDate){
+		var strResult = '';
+		var date = new Date(strIsoDate);
+		var d = $this.padLeft(date.getDate(), 2, '0');
+		var m = $this.padLeft(date.getMonth() + 1, 2, '0');
+		var y = date.getYear();
+		if (y < 999) {
+			y = y + 1900;
+		}
+		y = $d.padLeft(y, 4, '0');
+		var strResult = new String().concat(d, '.', m, '.', y);
+		return strResult;
+
+	};
 	this.displayBoard = function (board, week_year) {
-		console.log(week_year);
-		$('#week_year').html('Woche: ' + gh(week_year));
+		$('#week_year').html('Woche: ' + week_year);
 
 		$('#lecture_board').html('');
 		var date = null;
 
 		var result = $this.prepareBoard(board);
+		if (result && result.length) {
+			$('#board').show('slow');
+			$('#not_found').hide('slow');
+		} else {
+			$('#board').hide('slow');
+			$('#not_found').show('slow');
+			return;
+		}
 		for (var weekday in result) {
 			var lecture = result[weekday];
 			// creating jquery dom object of the cloned html template
@@ -218,15 +254,12 @@ app.Index = function (config) {
 			var select = $($('#select_date_content').html());
 			tpl.find('#week_day').html(gh($this.getWeekDayName(weekday)));
 			tpl.find('#select_date').append(select);
-			console.log(tbody);
 			var rows = 'Lectures: ';
-			console.log('lecture[0] ');
 			for (var i in lecture) {
 				rows += '<tr>';
 				var row = lecture[i];
 
-				tpl.find('#date').html(gh(row.tafel_datum));
-				date = row.tafel_datum;
+				tpl.find('#date').html($this.formatDate(row.tafel_datum));
 				rows += '<td>' + gh(row.tafel_von) + '</td>';
 				rows += '<td>' + gh(row.tafel_bis) + '</td>';
 				rows += '<td>' + gh(row.tafel_raum) + '</td>';
@@ -240,15 +273,6 @@ app.Index = function (config) {
 			$('#lecture_board').append(tpl);
 		}
 
-		console.log('board: ' + board);
-		if (date != null) {
-			$('#board').show('slow');
-			$('#not_found').hide('slow');
-			date = null;
-		} else {
-			$('#board').hide('slow');
-			$('#not_found').show('slow');
-		}
 	};
 
 
@@ -284,7 +308,6 @@ app.Index = function (config) {
 	this.school_class_onChange = function () {
 		var classId = $('#school_class').val();
 		$d.setCookie('classId', classId);
-		console.log(classId);
 		//classId = 1481221;
 		if (classId == 0) {
 			$('#board').hide('slow');
@@ -300,22 +323,24 @@ app.Index = function (config) {
     };
 	this.previous_onClick = function () {
         var selectedDate = $this.getSelectedDate();
-        alert(selectedDate);
-        var d = parseDate(selectedDate);
-        //d.parseDate(selectedDate,'yyyy-mm-dd','');
-        d.addDays(-7);
+		var d = new Date(selectedDate);
+		d.setDate(d.getDate() -7);
         var n = d.toISOString();
         var result = n.substring(0,10);
         $('#datepicker').val(result);
-
-
-			//$this.getBoard();
+		$this.getBoard();
 
 	};
 
 	this.next_onClick = function () {
 
-			$this.getBoard();
+		var selectedDate = $this.getSelectedDate();
+		var d = new Date(selectedDate);
+		d.setDate(d.getDate() +7);
+		var n = d.toISOString();
+		var result = n.substring(0,10);
+		$('#datepicker').val(result);
+		$this.getBoard();
 	};
 
 	this.datepicker_onKeyDown = function (e) {
