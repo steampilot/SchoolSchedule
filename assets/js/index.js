@@ -23,6 +23,8 @@ app.Index = function (config) {
 	// config
 	this.config = config || {};
 
+
+
 	/**
 	 * Init page
 	 *
@@ -47,6 +49,7 @@ app.Index = function (config) {
 		});
 
 		$('#datepicker').datepicker().val($this.getCurrentDate());
+        $('#selectedDate').val($this.getCurrentDate());
 		$('#datepicker').datepicker().on('hide', this.datepicker_onHide);
 		$('#profession').on('change', this.profession_onChange);
 		$('#school_class').on('change', this.school_class_onChange);
@@ -77,16 +80,6 @@ app.Index = function (config) {
 
 	};
 
-	/**
-	 * Event handler
-	 *
-	 * @param {object} e
-	 * @returns {undefined}
-	 */
-	this.myelement_onClick = function (e) {
-		$this.getSomething();
-		// $this.config
-	};
 
 	this.getCurrentDate = function(){
 		var d = new Date();
@@ -140,9 +133,9 @@ app.Index = function (config) {
 	};
 
 	this.getBoard = function () {
-		debugger;
 		var classId = $('#school_class').val();
 		var selectedDate = $('#datepicker').val();
+
 		console.log(selectedDate);
 		var year = $this.getWeek(selectedDate);
 		$('#page_control').fadeIn('slow');
@@ -301,9 +294,22 @@ app.Index = function (config) {
 			$this.getBoard();
 		}
 	};
+    this.getSelectedDate = function () {
+        var selectedDate = $('#datepicker').val();
+        return selectedDate;
+    };
 	this.previous_onClick = function () {
+        var selectedDate = $this.getSelectedDate();
+        alert(selectedDate);
+        var d = parseDate(selectedDate);
+        //d.parseDate(selectedDate,'yyyy-mm-dd','');
+        d.addDays(-7);
+        var n = d.toISOString();
+        var result = n.substring(0,10);
+        $('#datepicker').val(result);
 
-			$this.getBoard();
+
+			//$this.getBoard();
 
 	};
 
@@ -317,6 +323,7 @@ app.Index = function (config) {
 		return false;
 	};
 	this.datepicker_onHide = function () {
+        $this.selecdetDate = "hello";
 			$this.getBoard();
 
 	};
